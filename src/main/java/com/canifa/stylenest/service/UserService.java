@@ -4,27 +4,23 @@ import com.canifa.stylenest.entity.Role;
 import com.canifa.stylenest.entity.User;
 import com.canifa.stylenest.repository.RoleRepository;
 import com.canifa.stylenest.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public User registerUser(String username, String password, Set<String> roles) {
         User user = new User();
@@ -33,7 +29,7 @@ public class UserService implements UserDetailsService {
 
         // Thêm role cho user
         Set<Role> userRoles = roles.stream()
-                .map(roleName -> roleRepository.findByName(roleName))
+                .map(roleRepository::findByName)
                 .collect(Collectors.toSet());
         user.setRoles(userRoles);
 

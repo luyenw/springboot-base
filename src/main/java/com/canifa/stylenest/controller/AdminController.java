@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    @GetMapping("/")
-    @PreAuthorize("ADMIN")
-    public ResponseEntity admin(){
+    @GetMapping("")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> admin(){
         return ResponseEntity.status(HttpStatus.OK).body("ok");
     }
 }
