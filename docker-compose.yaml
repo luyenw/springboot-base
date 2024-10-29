@@ -1,8 +1,8 @@
 version: '3.8'
+
 services:
     postgres_db:
         image: postgres:13.5
-        container_name: PostgresCount
         restart: always
         environment:
             - POSTGRES_USER=hoadev
@@ -12,6 +12,34 @@ services:
             - postgres_db:/var/lib/postgresql/data
         ports:
             - '5432:5432'
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0  # You can choose a different version if needed
+        container_name: elasticsearch
+        environment:
+          - discovery.type=single-node
+          - ES_JAVA_OPTS=-Xms512m -Xmx512m  # Adjust memory settings based on your needs
+        volumes:
+          - elasticsearch_data:/usr/share/elasticsearch/data
+        ports:
+          - '9200:9200'
+          - '9300:9300'
+        restart: always
+
+    kibana:
+        image: docker.elastic.co/kibana/kibana:7.11.0  # Make sure the version matches Elasticsearch
+        container_name: kibana
+        environment:
+          - ELASTICSEARCH_HOSTS=http://elasticsearch:9200  # Connect to the Elasticsearch service
+        ports:
+          - '5601:5601'  # Expose Kibana on port 5601
+        volumes:
+          - kibana_data:/usr/share/kibana/data  # Persist Kibana data
+        restart: always
+
 volumes:
     postgres_db:
+        driver: local
+    elasticsearch_data:
+        driver: local
+    kibana_data:
         driver: local
