@@ -1,4 +1,4 @@
-package com.canifa.stylenest.service;
+package com.canifa.stylenest.service.impl;
 import com.canifa.stylenest.entity.CustomUserDetails;
 import com.canifa.stylenest.entity.Role;
 import com.canifa.stylenest.entity.User;
@@ -17,28 +17,8 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
-
-    public User registerUser(String username, String password, Set<String> roles) {
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password)); // Hash mật khẩu
-
-        // Thêm role cho user
-        Set<Role> userRoles = roles.stream()
-                .map(roleRepository::findByName)
-                .collect(Collectors.toSet());
-        user.setRoles(userRoles);
-
-        return userRepository.save(user);
-    }
-
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
