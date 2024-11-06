@@ -8,6 +8,7 @@ import com.canifa.stylenest.entity.dto.request.ModelRequestDTO;
 import com.canifa.stylenest.entity.dto.request.ProductRequestDTO;
 import com.canifa.stylenest.entity.dto.response.ModelResponseDTO;
 import com.canifa.stylenest.entity.dto.response.ProductResponseDTO;
+import com.canifa.stylenest.exception.NotFoundException;
 import com.canifa.stylenest.repository.FileRepository;
 import com.canifa.stylenest.repository.MediaRepository;
 import com.canifa.stylenest.repository.ModelRepository;
@@ -20,10 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +34,8 @@ public class ProductServiceImpl implements ProductService {
     private final MediaRepository mediaRepository;
 
     @Override
-    public ProductResponseDTO getProductById(String id) {
-        Product product = productRepository.findById(id).orElseThrow();
+    public ProductResponseDTO getProductById(String id) throws NotFoundException{
+        Product product = productRepository.findById(id).orElseThrow(()->new NotFoundException("nn"));
         List<File> files = fileRepository.findAllByProductId(id);
         List<ModelResponseDTO> models = modelService.findAllByProductId(id);
         return ProductResponseDTO.builder()
@@ -63,7 +61,69 @@ public class ProductServiceImpl implements ProductService {
             fileMap.put(key, multipartFiles.stream().map(fileService::save).toList());
         }
 
-        Product product = new Product();
+        Product product = Product.builder()
+            .name(productRequestDTO.getName())
+            .price(productRequestDTO.getPrice())
+            .description(productRequestDTO.getDescription())
+            .instruction(productRequestDTO.getInstruction())
+            .materials(productRequestDTO.getMaterials()).build();
+        product = productRepository.save(product);
+
+        // save model images
+        List<File> productFiles = fileMap.get("images");
+        String productId = product.getId();
+        List<Media> mediaList = productFiles.stream().map(productFile->new Media(null, productId, null, productFile.getId())).toList();
+        mediaRepository.saveAll(mediaList);
+
+        ProductResponseDTO productResponseDTO = ProductResponseDTO.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .price(product.getPrice())
+                .stock(product.getStock())
+                .description(product.getDescription())
+                .instruction(product.getInstruction())
+                .materials(product.getMaterials())
+                .images(productFiles.stream().map(File::getName).toList())
+                .models(new ArrayList<>())
+                .build();
+
+        for (ModelRequestDTO modelRequestDTO : productRequestDTO.getModels()) {
+            Model model = new Model();
+            model.setProductId(product.getId());
+            model.setStock(modelRequestDTO.getStock());
+            model.setSize(modelRequestDTO.getSize());
+            model.setColor(modelRequestDTO.getColor());
+            model = modelRepository.save(model);
+            List<File> modelFiles = fileMap.get(model.getColor());
+            for(File modelFile : modelFiles) {
+                Media media = new Media(null, product.getId(), model.getId(), modelFile.getId());
+                mediaRepository.save(media);
+            }
+            productResponseDTO.getModels().add(
+                    ModelResponseDTO.builder()
+                            .id(model.getId())
+                            .color(model.getColor())
+                            .size(model.getSize())
+                            .stock(model.getStock())
+                            .images(modelFiles.stream().map(File::getName).toList())
+                            .build()
+            );
+
+        }
+        return productResponseDTO;
+    }
+
+    @Override
+    public ProductResponseDTO updateProduct(String id, ProductRequestDTO productRequestDTO, Map<String, List<MultipartFile>> multipartFileMap) throws NotFoundException {
+        Map<String, List<File>> fileMap = new HashMap<>();
+        for (String key : multipartFileMap.keySet()) {
+            List<MultipartFile> multipartFiles = multipartFileMap.get(key);
+            fileMap.put(key, multipartFiles.stream().map(fileService::save).toList());
+        }
+
+        Optional<Product> result = productRepository.findById(id);
+        if (!result.isPresent()) throw new NotFoundException("Không tìm thấy sản phẩm ..");
+        Product product = result.get();
         product.setName(productRequestDTO.getName());
         product.setPrice(productRequestDTO.getPrice());
         product.setDescription(productRequestDTO.getDescription());
@@ -116,12 +176,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(Product product) {
-        return null;
-    }
-
-    @Override
     public void deleteProduct(String id) {
-
+        productRepository.deleteById(id);
     }
 }
