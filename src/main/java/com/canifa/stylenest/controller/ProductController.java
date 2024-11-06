@@ -52,6 +52,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable("id") String id){
+        productService.deleteProduct(id);
         return ResponseEntity.ok().body(
                 ApiResponse.builder()
                     .success(true)
