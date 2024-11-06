@@ -12,4 +12,4 @@ COPY --from=build app/target/canifa-0.0.1-SNAPSHOT.jar /run/canifa-0.0.1-SNAPSHO
 EXPOSE 8080
 
 ENV JAVA_OPTIONS="-Xmx2048m -Xms256m"
-ENTRYPOINT java -jar $JAVA_OPTIONS /run/filename.jar
+ENTRYPOINT java -jar $JAVA_OPTIONS /run/canifa-0.0.1-SNAPSHOT.jar
