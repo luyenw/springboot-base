@@ -7,6 +7,8 @@ import com.canifa.stylenest.entity.dto.response.ApiResponse;
 import com.canifa.stylenest.service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
+@Slf4j
 public class ProductController {
     private final ProductService productService;
     @GetMapping("/{id}")
@@ -36,12 +39,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("")
     public ResponseEntity<?> createProduct(@RequestPart("data") ProductRequestDTO productRequestDTO, HttpServletRequest request) {
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        Map<String, List<MultipartFile>> multipartFileMap = new HashMap<>();
-        multipartFileMap.put("images", multipartRequest.getFiles("images"));
-        for(ModelRequestDTO modelRequestDTO : productRequestDTO.getModels()){
-            multipartFileMap.put(modelRequestDTO.getColor(), multipartRequest.getFiles(modelRequestDTO.getColor()));
-        }
+        var multipartFileMap = extractRequestFileMap(productRequestDTO, (MultipartHttpServletRequest) request);
         return ResponseEntity.ok().body(
                 ApiResponse.builder()
                         .success(true)
@@ -49,5 +47,44 @@ public class ProductController {
                         .data(productService.createProduct(productRequestDTO, multipartFileMap))
                         .build()
         );
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable("id") String id){
+        productService.deleteProduct(id);
+        return ResponseEntity.ok().body(
+                ApiResponse.builder()
+                    .success(true)
+                    .message("Xóa sản phẩm thành công")
+                    .data(id)
+                    .build()
+        );
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> patchProduct(
+            @PathVariable("id") String id,
+            @RequestPart("data") ProductRequestDTO productRequestDTO,
+            HttpServletRequest request){
+        var multipartFileMap = extractRequestFileMap(productRequestDTO, (MultipartHttpServletRequest) request);
+        return ResponseEntity.ok().body(
+                ApiResponse.builder()
+                        .success(true)
+                        .message("Cập nhật sản phẩm thành công")
+                        .data(productService.updateProduct(id, productRequestDTO, multipartFileMap))
+                        .build()
+        );
+    }
+
+    private Map extractRequestFileMap(@RequestPart("data") ProductRequestDTO productRequestDTO, MultipartHttpServletRequest request) {
+        MultipartHttpServletRequest multipartRequest = request;
+        var multipartFileMap = new HashMap<>();
+        multipartFileMap.put("images", multipartRequest.getFiles("images"));
+        productRequestDTO.getModels().stream().forEach(modelRequestDTO -> {
+            multipartFileMap.put(modelRequestDTO.getColor(), multipartRequest.getFiles(modelRequestDTO.getColor()));
+        });
+        return multipartFileMap;
     }
 }

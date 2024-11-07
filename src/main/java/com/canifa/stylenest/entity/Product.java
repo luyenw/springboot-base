@@ -1,15 +1,14 @@
 package com.canifa.stylenest.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-
-@Getter
-@Setter
 @Entity
 @Table(name = "products")
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
