@@ -18,12 +18,20 @@ public class SecurityConfig {
 
     private final JwtRequestFilter jwtRequestFilter;
 
+    private final String[] regularPath = new String[]{
+            "/register",
+            "/login",
+            "/files/*",
+            "/images/*",
+            "/categories/*",
+            "/products/*"
+    };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequest ->
-                        authorizeRequest.requestMatchers("/register", "/login", "/files/**", "/images/**")
+                        authorizeRequest.requestMatchers(regularPath)
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
