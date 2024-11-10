@@ -36,6 +36,17 @@ public class ProductController {
         );
     }
 
+    @GetMapping("/category/{id}")
+    public ResponseEntity<?> getProductByCategory(@PathVariable("id") String id) {
+        return ResponseEntity.ok().body(
+                ApiResponse.builder()
+                        .success(true)
+                        .message("Lấy sản phẩm thành công")
+                        .data(productService.getProductByCategory(id))
+                        .build()
+        );
+    }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("")
     public ResponseEntity<?> createProduct(@RequestPart("data") ProductRequestDTO productRequestDTO, HttpServletRequest request) {

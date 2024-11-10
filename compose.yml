@@ -1,0 +1,10 @@
+services:
+  backend:
+    image: vinh412/stylenest-backend
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${PORT}:${PORT}"
+    volumes:
+      - ./uploads:/uploads

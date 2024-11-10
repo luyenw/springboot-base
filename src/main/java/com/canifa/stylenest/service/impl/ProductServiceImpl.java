@@ -1,18 +1,12 @@
 package com.canifa.stylenest.service.impl;
 
-import com.canifa.stylenest.entity.File;
-import com.canifa.stylenest.entity.Media;
-import com.canifa.stylenest.entity.Model;
-import com.canifa.stylenest.entity.Product;
+import com.canifa.stylenest.entity.*;
 import com.canifa.stylenest.entity.dto.request.ModelRequestDTO;
 import com.canifa.stylenest.entity.dto.request.ProductRequestDTO;
 import com.canifa.stylenest.entity.dto.response.ModelResponseDTO;
 import com.canifa.stylenest.entity.dto.response.ProductResponseDTO;
 import com.canifa.stylenest.exception.NotFoundException;
-import com.canifa.stylenest.repository.FileRepository;
-import com.canifa.stylenest.repository.MediaRepository;
-import com.canifa.stylenest.repository.ModelRepository;
-import com.canifa.stylenest.repository.ProductRepository;
+import com.canifa.stylenest.repository.*;
 import com.canifa.stylenest.service.FileService;
 import com.canifa.stylenest.service.ModelService;
 import com.canifa.stylenest.service.ProductService;
@@ -22,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +27,7 @@ public class ProductServiceImpl implements ProductService {
     private final ModelService modelService;
     private final FileService fileService;
     private final MediaRepository mediaRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public ProductResponseDTO getProductById(String id) throws NotFoundException{
@@ -178,5 +174,35 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(String id) {
         productRepository.deleteById(id);
+    }
+
+    private List<Product> getProductByParentCategory(String id){
+        List<Category> categoryList = categoryRepository.findAllByParentId(id);
+        var subProducts = categoryList.stream().map(category -> getProductByParentCategory(category.getId())).toList();
+        var catProducts = productRepository.findByCategoryId(id);
+        subProducts.stream().forEach(subProduct->catProducts.addAll(subProduct));
+        return catProducts;
+    }
+
+    @Override
+    public List<ProductResponseDTO> getProductByCategory(String id) {
+        var products = this.getProductByParentCategory(id);
+        return products.stream().map(
+                product -> {
+                    List<File> files = fileRepository.findAllByProductId(product.getId());
+                    List<ModelResponseDTO> models = modelService.findAllByProductId(product.getId());
+                    return ProductResponseDTO.builder()
+                            .id(product.getId())
+                            .name(product.getName())
+                            .price(product.getPrice())
+                            .stock(product.getStock())
+                            .description(product.getDescription())
+                            .instruction(product.getInstruction())
+                            .materials(product.getMaterials())
+                            .images(files.stream().map(File::getName).toList())
+                            .models(models)
+                            .build();
+                }
+        ).toList();
     }
 }

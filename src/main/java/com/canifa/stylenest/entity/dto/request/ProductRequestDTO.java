@@ -14,4 +14,5 @@ public class ProductRequestDTO {
     private String instruction;
     private String materials;
     private List<ModelRequestDTO> models = new ArrayList<>();
+    private String categoryId;
 }
