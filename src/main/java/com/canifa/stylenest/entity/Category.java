@@ -1,25 +1,18 @@
 package com.canifa.stylenest.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "categories")
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Category {
     @Id
     private String id;
     private String description;
     @Column(name = "parent_id")
     private String parentId;
-
-    public String getName(){
-        return this.id;
-    }
-
-    public String setName(String name){
-        return this.id = name;
-    }
 }

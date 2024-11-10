@@ -33,7 +33,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 .filter(header -> header.startsWith("Bearer "))
                 .map(header -> header.substring(7))
                 .map(jwt -> jwtUtil.extractUsername(jwt))
-                .ifPresentOrElse(username -> {
+                .ifPresent(username -> {
                     if (SecurityContextHolder.getContext().getAuthentication() == null) {
                         var userDetails = userDetailsServiceImpl.loadUserByUsername(username);
                         if (userDetails != null) {
@@ -43,9 +43,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                             SecurityContextHolder.getContext().setAuthentication(authToken);
                         }
                     }
-                }, ()->{
-                    return ;
-
                 });
 
         chain.doFilter(request, response);
