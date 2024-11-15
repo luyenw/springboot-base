@@ -7,12 +7,14 @@ import com.canifa.stylenest.repository.RoleRepository;
 import com.canifa.stylenest.repository.UserRepository;
 import com.canifa.stylenest.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -25,7 +27,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User register(String username, String password, Set<String> roles) {
+    public void register(String username, String password, Set<String> roles) {
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password)); // Hash mật khẩu
@@ -36,6 +38,6 @@ public class AuthServiceImpl implements AuthService {
                 .collect(Collectors.toSet());
         user.setRoles(userRoles);
 
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 }

@@ -22,6 +22,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
+@CrossOrigin("http://localhost:4200")
 @Slf4j
 public class ProductController {
     private final ProductService productService;

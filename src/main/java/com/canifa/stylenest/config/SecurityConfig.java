@@ -2,6 +2,7 @@ package com.canifa.stylenest.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,7 +23,7 @@ public class SecurityConfig {
             "/register",
             "/login",
             "/files/*",
-            "/images/*",
+            "/images/**",
             "/categories/*",
             "/products/*"
     };
@@ -30,11 +31,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequest ->
-                        authorizeRequest.requestMatchers(regularPath)
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated())
+                        authorizeRequest
+                                .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                                .requestMatchers(regularPath).permitAll()
+                                .anyRequest().authenticated())
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

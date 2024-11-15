@@ -4,6 +4,7 @@ import com.canifa.stylenest.entity.dto.response.ApiResponse;
 import com.canifa.stylenest.entity.dto.request.AuthRequest;
 import com.canifa.stylenest.entity.dto.response.AuthResponse;
 import com.canifa.stylenest.exception.CommonException;
+import com.canifa.stylenest.repository.UserRepository;
 import com.canifa.stylenest.service.AuthService;
 import com.canifa.stylenest.service.impl.UserDetailsServiceImpl;
 import com.canifa.stylenest.utils.JwtUtil;
@@ -28,12 +29,12 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final UserRepository userRepository;
     private final AuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<?>> register(@Valid @RequestBody AuthRequest authRequest) {
-        UserDetails existingUser = userDetailsServiceImpl.loadUserByUsername(authRequest.getUsername());
+        User existingUser = userRepository.findByUsername(authRequest.getUsername());
         if (existingUser != null) {
             throw new CommonException("username đã tồn tại", HttpStatus.CONFLICT);
         }
