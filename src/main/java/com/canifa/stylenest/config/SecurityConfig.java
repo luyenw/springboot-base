@@ -25,7 +25,7 @@ public class SecurityConfig {
             "/files/*",
             "/images/**",
             "/categories/*",
-            "/products/*"
+            "/products/**"
     };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

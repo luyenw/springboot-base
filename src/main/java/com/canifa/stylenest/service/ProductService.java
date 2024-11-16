@@ -14,4 +14,5 @@ public interface ProductService {
     ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO, Map<String, List<MultipartFile>> multipartFileMap);
     ProductResponseDTO updateProduct(String id, ProductRequestDTO productRequestDTO, Map<String, List<MultipartFile>> multipartFileMap) throws NotFoundException;
     void deleteProduct(String id);
+    List<ProductResponseDTO> getProductByCategory(String id);
 }
