@@ -1,13 +1,13 @@
 package com.canifa.stylenest.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
+import lombok.*;
 @Entity
 @Table(name = "cart_item")
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,6 +15,10 @@ public class CartItem {
     @Column(name = "user_id")
     private Long userId;
     @Column(name = "model_id")
-    private Long modelId;
+    private String modelId;
     private Long quantity;
+
+    @ManyToOne
+    @JoinColumn(name = "model_id", insertable = false, updatable = false)
+    private Model model;
 }
