@@ -15,5 +15,9 @@ public class Model {
     private String size;
     private String color;
     private int stock;
+    @Column(name = "product_id")
     private String productId;
+    @ManyToOne
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private Product product;
 }
