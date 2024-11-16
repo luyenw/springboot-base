@@ -1,0 +1,37 @@
+name: Build, Push, and Deploy
+
+on:
+  push:
+    branches:
+      - canifa/main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and Tag Docker Image
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/stylenest-backend .
+
+    - name: Push Docker Image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/stylenest-backend
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+    - name: Setup SSH Key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy to Server
+      run: ssh -o StrictHostKeyChecking=no root@vkl.vinhdd.io.vn '/stylenest/deploy.sh'
