@@ -1,6 +1,6 @@
 ##### Dockerfile #####
-FROM maven:3.8.3-openjdk-17 as build
-WORKDIR ./app
+FROM maven:3.8.3-openjdk-17 AS build
+WORKDIR /app
 COPY . .
 RUN mvn install -DskipTests=true
 
