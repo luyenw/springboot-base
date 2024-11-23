@@ -1,5 +1,6 @@
 package com.canifa.stylenest.service.impl;
 
+import com.canifa.stylenest.common.PageRequest;
 import com.canifa.stylenest.entity.*;
 import com.canifa.stylenest.entity.dto.request.ModelRequestDTO;
 import com.canifa.stylenest.entity.dto.request.ProductRequestDTO;
@@ -10,8 +11,10 @@ import com.canifa.stylenest.repository.*;
 import com.canifa.stylenest.service.FileService;
 import com.canifa.stylenest.service.ModelService;
 import com.canifa.stylenest.service.ProductService;
+import com.canifa.stylenest.utils.PaginationUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.support.PageableUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -204,5 +207,10 @@ public class ProductServiceImpl implements ProductService {
                             .build();
                 }
         ).toList();
+    }
+
+    @Override
+    public List<ProductResponseDTO> getProductByCategory(String id, PageRequest pageRequest) {
+        return PaginationUtils.paginate(getProductByCategory(id), pageRequest);
     }
 }
