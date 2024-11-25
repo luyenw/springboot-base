@@ -36,7 +36,7 @@ public class AuthController {
             throw new CommonException("username đã tồn tại", HttpStatus.CONFLICT);
         }
 
-        userService.registerUser(authRequest.getUsername(), authRequest.getPassword(), Set.of("CUSTOMER"));
+        userService.registerUser(authRequest.getUsername(), authRequest.getPassword(), Set.of("USER"));
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.builder().success(true).message("Đăng ký thành công").build());
@@ -59,17 +59,6 @@ public class AuthController {
                             .build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.builder().success(false).message("Login failed: " + e.getMessage()).build());
-        }
-    }
-
-    @PostMapping("/authenticate")
-    public String authenticate(@RequestBody AuthRequest authRequest) throws Exception {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-            return jwtUtil.generateToken((UserDetails) authentication.getPrincipal());
-        } catch (Exception e) {
-            throw new Exception("Invalid username or password", e);
         }
     }
 }

@@ -1,5 +1,5 @@
 package com.canifa.stylenest.service;
-import com.canifa.stylenest.entity.CustomUserDetails;
+import com.canifa.stylenest.security.CustomUserDetails;
 import com.canifa.stylenest.entity.Role;
 import com.canifa.stylenest.entity.User;
 import com.canifa.stylenest.repository.RoleRepository;
@@ -25,9 +25,8 @@ public class UserService implements UserDetailsService {
     public User registerUser(String username, String password, Set<String> roles) {
         User user = new User();
         user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password)); // Hash mật khẩu
+        user.setPassword(passwordEncoder.encode(password));
 
-        // Thêm role cho user
         Set<Role> userRoles = roles.stream()
                 .map(roleRepository::findByName)
                 .collect(Collectors.toSet());
