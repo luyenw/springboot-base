@@ -1,7 +1,6 @@
 package com.canifa.stylenest.service;
 
 import com.canifa.stylenest.common.PageRequest;
-import com.canifa.stylenest.entity.Product;
 import com.canifa.stylenest.entity.dto.request.ProductRequestDTO;
 import com.canifa.stylenest.entity.dto.response.ProductResponseDTO;
 import com.canifa.stylenest.exception.NotFoundException;
@@ -17,4 +16,5 @@ public interface ProductService {
     void deleteProduct(String id);
     List<ProductResponseDTO> getProductByCategory(String id);
     List<ProductResponseDTO> getProductByCategory(String id, PageRequest pageRequest);
+    List<ProductResponseDTO> getAll();
 }

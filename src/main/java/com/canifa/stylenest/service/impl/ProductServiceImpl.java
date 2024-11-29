@@ -14,12 +14,10 @@ import com.canifa.stylenest.service.ProductService;
 import com.canifa.stylenest.utils.PaginationUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.support.PageableUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -212,5 +210,27 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductResponseDTO> getProductByCategory(String id, PageRequest pageRequest) {
         return PaginationUtils.paginate(getProductByCategory(id), pageRequest);
+    }
+
+    @Override
+    public List<ProductResponseDTO> getAll() {
+        var products = productRepository.findAll();
+        return products.stream().map(
+                product -> {
+                    List<File> files = fileRepository.findAllByProductId(product.getId());
+                    List<ModelResponseDTO> models = modelService.findAllByProductId(product.getId());
+                    return ProductResponseDTO.builder()
+                            .id(product.getId())
+                            .name(product.getName())
+                            .price(product.getPrice())
+                            .stock(product.getStock())
+                            .description(product.getDescription())
+                            .instruction(product.getInstruction())
+                            .materials(product.getMaterials())
+                            .images(files.stream().map(File::getName).toList())
+                            .models(models)
+                            .build();
+                }
+        ).toList();
     }
 }
