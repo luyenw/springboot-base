@@ -24,9 +24,9 @@ public class SecurityConfig {
             "/api/v1/docs/**",
             "/register",
             "/login",
-            "/files/*",
+            "/files/**",
             "/images/**",
-            "/categories/*",
+            "/categories/**",
             "/products/**"
     };
     @Bean
