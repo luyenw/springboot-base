@@ -1,5 +1,6 @@
 package com.canifa.stylenest.controller;
 
+import com.canifa.stylenest.common.PageRequest;
 import com.canifa.stylenest.entity.Product;
 import com.canifa.stylenest.entity.dto.request.ModelRequestDTO;
 import com.canifa.stylenest.entity.dto.request.ProductRequestDTO;
@@ -39,12 +40,12 @@ public class ProductController {
     }
 
     @GetMapping("/category/{id}")
-    public ResponseEntity<?> getProductByCategory(@PathVariable("id") String id) {
+    public ResponseEntity<?> getProductByCategory(@PathVariable("id") String id, @ModelAttribute PageRequest pageRequest) {
         return ResponseEntity.ok().body(
                 ApiResponse.builder()
                         .success(true)
                         .message("Lấy sản phẩm thành công")
-                        .data(productService.getProductByCategory(id))
+                        .data(productService.getProductByCategory(id, pageRequest))
                         .build()
         );
     }

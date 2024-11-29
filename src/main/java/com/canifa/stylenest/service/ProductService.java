@@ -1,5 +1,6 @@
 package com.canifa.stylenest.service;
 
+import com.canifa.stylenest.common.PageRequest;
 import com.canifa.stylenest.entity.Product;
 import com.canifa.stylenest.entity.dto.request.ProductRequestDTO;
 import com.canifa.stylenest.entity.dto.response.ProductResponseDTO;
@@ -15,4 +16,5 @@ public interface ProductService {
     ProductResponseDTO updateProduct(String id, ProductRequestDTO productRequestDTO, Map<String, List<MultipartFile>> multipartFileMap) throws NotFoundException;
     void deleteProduct(String id);
     List<ProductResponseDTO> getProductByCategory(String id);
+    List<ProductResponseDTO> getProductByCategory(String id, PageRequest pageRequest);
 }

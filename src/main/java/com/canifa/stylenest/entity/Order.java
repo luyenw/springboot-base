@@ -1,25 +1,30 @@
 package com.canifa.stylenest.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
-@Entity
-@Table(name = "orders")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Entity(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "user_id")
-    private int userId;
-    @Column(name = "order_date")
-    private LocalDateTime orderDate;
-    @Column(name = "total_price")
-    private Long totalPrice;
-    private String status;
-    private String fullname;
+    private String name;
     private String address;
-    private String email;
-    @Column(name = "phone_number")
-    private String phoneNumber;
+    private String tel;
+    private Long value;
+    private Integer status;
+    @Column(name = "user_id")
+    private Long userId;
+
+    @OneToMany(mappedBy = "orderId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<OrderItem> orderItemList;
 }
