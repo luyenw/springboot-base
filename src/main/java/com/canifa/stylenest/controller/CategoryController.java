@@ -19,7 +19,7 @@ import com.canifa.stylenest.entity.dto.response.ApiResponse;
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @GetMapping(value = "/")
+    @GetMapping("")
     public ResponseEntity<?> getCategory(){
         System.out.println("get category");
         return ResponseEntity.status(HttpStatus.OK).body(

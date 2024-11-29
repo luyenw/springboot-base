@@ -31,7 +31,7 @@ public class OrderController {
                         .build());
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     public ResponseEntity<?> getAllByUser(){

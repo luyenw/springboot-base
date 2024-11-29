@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("cart")
+@RequestMapping("/cart")
 @RequiredArgsConstructor
 public class CartController {
 
     private final CartService cartService;
 
     @SecurityRequirement(name = "Authorization")
-    @GetMapping("/")
+    @GetMapping("")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     public ResponseEntity<?> getCurrentCart(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
