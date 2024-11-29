@@ -1,4 +1,4 @@
-package com.canifa.stylenest.entity.dto.response;
+package com.canifa.stylenest.entity.dto;
 
 import com.canifa.stylenest.entity.Role;
 import lombok.Builder;
@@ -8,8 +8,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class AuthResponse {
-    private String token;
+public class UserDto {
     private String username;
     private List<String> roles;
 }

@@ -1,4 +1,5 @@
 package com.canifa.stylenest.controller;
+import com.canifa.stylenest.entity.Role;
 import com.canifa.stylenest.entity.User;
 import com.canifa.stylenest.entity.dto.response.ApiResponse;
 import com.canifa.stylenest.entity.dto.request.AuthRequest;
@@ -20,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -56,7 +58,11 @@ public class AuthController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(ApiResponse.builder()
-                            .data(new AuthResponse(jwtUtil.generateToken((UserDetails) authentication.getPrincipal())))
+                            .data(AuthResponse.builder()
+                                    .username(authentication.getName())
+                                    .roles(authentication.getAuthorities().stream().map(role->role.toString()).toList())
+                                    .token(jwtUtil.generateToken((UserDetails) authentication.getPrincipal()))
+                                    .build())
                             .success(true)
                             .message("Đăng nhập thành công")
                             .build());

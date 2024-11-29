@@ -1,5 +1,9 @@
 package com.canifa.stylenest.controller;
 
+import com.canifa.stylenest.entity.dto.response.ApiResponse;
+import com.canifa.stylenest.service.ProductService;
+import com.canifa.stylenest.service.StatsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,10 +13,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin")
+@RequiredArgsConstructor
 public class AdminController {
+    private final StatsService statsService;
+
     @GetMapping("")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> admin(){
         return ResponseEntity.status(HttpStatus.OK).body("ok");
+    }
+
+    @GetMapping("/stats")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity getStats(){
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.builder()
+                .success(true)
+                .data(statsService.calculateStats())
+                .build()
+        );
     }
 }
