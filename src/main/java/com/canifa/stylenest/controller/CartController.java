@@ -4,6 +4,7 @@ import com.canifa.stylenest.entity.CustomUserDetails;
 import com.canifa.stylenest.entity.dto.request.CartRequest;
 import com.canifa.stylenest.entity.dto.response.ApiResponse;
 import com.canifa.stylenest.service.CartService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,18 +12,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("cart")
 @RequiredArgsConstructor
 public class CartController {
 
     private final CartService cartService;
 
+    @SecurityRequirement(name = "Authorization")
     @GetMapping("/")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     public ResponseEntity<?> getCurrentCart(){
@@ -37,6 +39,7 @@ public class CartController {
         );
     }
 
+    @SecurityRequirement(name = "Authorization")
     @GetMapping("/add")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     public ResponseEntity<?> addItem(@RequestBody @Valid CartRequest cartRequest){

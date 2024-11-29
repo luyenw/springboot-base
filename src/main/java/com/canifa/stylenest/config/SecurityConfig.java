@@ -21,6 +21,7 @@ public class SecurityConfig {
     private final JwtRequestFilter jwtRequestFilter;
 
     private final String[] regularPath = new String[]{
+            "/api/v1/docs/**",
             "/register",
             "/login",
             "/files/*",

@@ -5,6 +5,7 @@ import com.canifa.stylenest.entity.dto.request.ModelRequestDTO;
 import com.canifa.stylenest.entity.dto.request.ProductRequestDTO;
 import com.canifa.stylenest.entity.dto.response.ApiResponse;
 import com.canifa.stylenest.service.ProductService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -48,6 +49,7 @@ public class ProductController {
         );
     }
 
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("")
     public ResponseEntity<?> createProduct(@RequestPart("data") ProductRequestDTO productRequestDTO, HttpServletRequest request) {
@@ -61,6 +63,7 @@ public class ProductController {
         );
     }
 
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable("id") String id){
@@ -74,6 +77,7 @@ public class ProductController {
         );
     }
 
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAuthority('ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<?> patchProduct(
