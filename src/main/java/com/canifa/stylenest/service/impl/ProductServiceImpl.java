@@ -208,8 +208,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponseDTO> getProductByCategory(String id, PageRequest pageRequest) {
+    public PaginationUtils.PageResponse<ProductResponseDTO> getProductByCategory(String id, PageRequest pageRequest) {
         return PaginationUtils.paginate(getProductByCategory(id), pageRequest);
+    }
+
+    @Override
+    public PaginationUtils.PageResponse getAll(PageRequest pageRequest) {
+        return PaginationUtils.paginate(getAll(), pageRequest);
     }
 
     @Override

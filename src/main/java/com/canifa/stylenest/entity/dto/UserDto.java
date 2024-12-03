@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @Builder
 public class UserDto {
+    private Long id;
     private String username;
     private List<String> roles;
 }
