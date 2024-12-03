@@ -4,6 +4,7 @@ import com.canifa.stylenest.common.PageRequest;
 import com.canifa.stylenest.entity.dto.request.ProductRequestDTO;
 import com.canifa.stylenest.entity.dto.response.ProductResponseDTO;
 import com.canifa.stylenest.exception.NotFoundException;
+import com.canifa.stylenest.utils.PaginationUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public interface ProductService {
     ProductResponseDTO updateProduct(String id, ProductRequestDTO productRequestDTO, Map<String, List<MultipartFile>> multipartFileMap) throws NotFoundException;
     void deleteProduct(String id);
     List<ProductResponseDTO> getProductByCategory(String id);
-    List<ProductResponseDTO> getProductByCategory(String id, PageRequest pageRequest);
+    PaginationUtils.PageResponse getProductByCategory(String id, PageRequest pageRequest);
+    PaginationUtils.PageResponse getAll(PageRequest pageRequest);
     List<ProductResponseDTO> getAll();
 }

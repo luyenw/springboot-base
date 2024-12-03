@@ -1,9 +1,11 @@
 package com.canifa.stylenest.service.impl;
+import com.canifa.stylenest.common.PageRequest;
 import com.canifa.stylenest.entity.CustomUserDetails;
 import com.canifa.stylenest.entity.User;
 import com.canifa.stylenest.entity.dto.UserDto;
 import com.canifa.stylenest.mapper.UserMapper;
 import com.canifa.stylenest.repository.UserRepository;
+import com.canifa.stylenest.utils.PaginationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +32,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     public List<UserDto> getAll(){
         return userRepository.findAll().stream().map(user->userMapper.toUserDTO(user)).toList();
+    }
+
+    public PaginationUtils.PageResponse getAll(PageRequest pageRequest){
+        return PaginationUtils.paginate(getAll(), pageRequest);
     }
 }

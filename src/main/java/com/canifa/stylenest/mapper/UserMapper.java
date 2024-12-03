@@ -15,6 +15,7 @@ public class UserMapper {
             return null;
         }
         return UserDto.builder()
+                .id(user.getId())
                 .username(user.getUsername())
                 .roles(user.getRoles().stream().map(role->role.toString()).toList())
                 .build();

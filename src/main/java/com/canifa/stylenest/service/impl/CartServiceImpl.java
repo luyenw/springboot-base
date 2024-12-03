@@ -35,22 +35,4 @@ public class CartServiceImpl implements CartService {
                 ).toList();
     }
 
-//    @Override
-//    @Transactional
-//    public Invoice checkout(Long userId, CheckoutRequest request) {
-//        List<CartItem> items = getItemsByUserId(userId).stream().filter(CartItem::getIsLatest).toList();
-//        Invoice invoice = invoiceRepository.save(Invoice.builder()
-//                .name(request.getName())
-//                .address(request.getAddress())
-//                .tel(request.getTel())
-//                .status(InvoiceStatus.ORDERED)
-//                .value(LongStream.range(0, items.size()).map(i->items.get((int) i).getModel().getProduct().getPrice()*items.get((int) i).getQuantity()).sum())
-//                .userId(userId)
-//                .build());
-//        getItemsByUserId(userId).stream().forEach(item->{
-//            item.setInvoiceId(invoice.getId());
-//            item.setIsLatest(false);
-//        });
-//        return invoice;
-//    }
 }
