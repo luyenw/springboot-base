@@ -21,13 +21,7 @@ public class SecurityConfig {
     private final JwtRequestFilter jwtRequestFilter;
 
     private final String[] regularPath = new String[]{
-            "/api/v1/docs/**",
-            "/register",
-            "/login",
-            "/files/**",
-            "/images/**",
-            "/categories/**",
-            "/products/**"
+            "/admin/**"
     };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,8 +31,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequest ->
                         authorizeRequest
                                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                                .requestMatchers(regularPath).permitAll()
-                                .anyRequest().authenticated())
+                                .requestMatchers(regularPath).authenticated()
+                                .anyRequest().permitAll())
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
