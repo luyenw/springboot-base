@@ -41,7 +41,7 @@ public class AdminController {
 
     @GetMapping("/users")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity getUsers(@RequestBody @Valid PageRequest pageRequest){
+    public ResponseEntity getUsers(@Valid PageRequest pageRequest){
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.builder()
                 .success(true)
                 .data(userService.getAll(pageRequest))
