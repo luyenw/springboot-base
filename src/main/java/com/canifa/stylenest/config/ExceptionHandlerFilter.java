@@ -32,9 +32,10 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
         try {
             filterChain.doFilter(request, response);
+            log.info("REQUEST URI: {}, Method: {}", request.getRequestURI(), request.getMethod());
         }
         catch (Exception e) {
-            log.error("Spring Security Filter Chain Exception: {}", e.getMessage());
+            log.error("Filter Chain Exception: {}", e.getMessage());
             response.setStatus(500);
             response.setContentType("application/json");
             response.getWriter().write(
