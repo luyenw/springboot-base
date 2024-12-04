@@ -31,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public List<UserDto> getAll(){
-        return userRepository.findAll().stream().map(user->userMapper.toUserDTO(user)).toList();
+        return userRepository.findAll().stream().map(userMapper::toUserDTO).toList();
     }
 
     public PaginationUtils.PageResponse getAll(PageRequest pageRequest){

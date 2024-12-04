@@ -1,24 +1,19 @@
 package com.canifa.stylenest.controller;
 
 import com.canifa.stylenest.common.PageRequest;
-import com.canifa.stylenest.entity.Product;
-import com.canifa.stylenest.entity.dto.request.ModelRequestDTO;
 import com.canifa.stylenest.entity.dto.request.ProductRequestDTO;
 import com.canifa.stylenest.entity.dto.response.ApiResponse;
 import com.canifa.stylenest.service.ProductService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,7 +34,7 @@ public class ProductController {
     }
 
     @GetMapping("/category/{id}")
-    public ResponseEntity<?> getProductByCategory(@PathVariable("id") String id, @ModelAttribute PageRequest pageRequest) {
+    public ResponseEntity<?> getProductByCategory(@PathVariable("id") String id, PageRequest pageRequest) {
         return ResponseEntity.ok().body(
                 ApiResponse.builder()
                         .success(true)
