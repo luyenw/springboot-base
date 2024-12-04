@@ -20,7 +20,7 @@ public class SecurityConfig {
 
     private final JwtRequestFilter jwtRequestFilter;
 
-    private final String[] regularPath = new String[]{
+    private final String[] authenticatePath = new String[]{
             "/admin/**"
     };
     @Bean
@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequest ->
                         authorizeRequest
                                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                                .requestMatchers(regularPath).authenticated()
+                                .requestMatchers(authenticatePath).authenticated()
                                 .anyRequest().permitAll())
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
