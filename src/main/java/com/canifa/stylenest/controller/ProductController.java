@@ -38,7 +38,7 @@ public class ProductController {
     }
 
     @GetMapping("/category/{id}")
-    public ResponseEntity<?> getProductByCategory(@PathVariable("id") String id, @ModelAttribute PageRequest pageRequest) {
+    public ResponseEntity<?> getProductByCategory(@PathVariable("id") String id, PageRequest pageRequest) {
         return ResponseEntity.ok().body(
                 ApiResponse.builder()
                         .success(true)
