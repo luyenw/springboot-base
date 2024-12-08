@@ -3,7 +3,9 @@ package com.canifa.stylenest.controller;
 import com.canifa.stylenest.common.PageRequest;
 import com.canifa.stylenest.entity.dto.request.ProductRequestDTO;
 import com.canifa.stylenest.entity.dto.response.ApiResponse;
+import com.canifa.stylenest.exception.BadRequestException;
 import com.canifa.stylenest.service.ProductService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,7 +52,12 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("")
     public ResponseEntity<?> createProduct(@RequestPart("data") String productRequestJsonString, HttpServletRequest request) {
-        ProductRequestDTO productRequestDTO = objectMapper.convertValue(productRequestJsonString, ProductRequestDTO.class);
+        ProductRequestDTO productRequestDTO = null;
+        try {
+            productRequestDTO = objectMapper.readValue(productRequestJsonString, ProductRequestDTO.class);
+        } catch (JsonProcessingException e) {
+            throw new BadRequestException("Truyền sản phẩm không đúng định dạng");
+        }
         var multipartFileMap = extractRequestFileMap(productRequestDTO, (MultipartHttpServletRequest) request);
         return ResponseEntity.ok().body(
                 ApiResponse.builder()
