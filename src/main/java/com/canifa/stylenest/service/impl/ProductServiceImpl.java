@@ -32,9 +32,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDTO getProductById(String id) throws NotFoundException{
-        Product product = productRepository.findById(id).orElseThrow(()->new NotFoundException("nn"));
+        Product product = productRepository.findByIdAndIsDeletedIsFalse(id).orElseThrow(()->new NotFoundException("nn"));
         List<File> files = fileRepository.findAllByProductId(id);
         List<ModelResponseDTO> models = modelService.findAllByProductId(id);
+        System.out.println(models.toString());
         return ProductResponseDTO.builder()
                 .id(product.getId())
                 .name(product.getName())
@@ -118,7 +119,7 @@ public class ProductServiceImpl implements ProductService {
             fileMap.put(key, multipartFiles.stream().map(fileService::save).toList());
         }
 
-        Optional<Product> result = productRepository.findById(id);
+        Optional<Product> result = productRepository.findByIdAndIsDeletedIsFalse(id);
         if (!result.isPresent()) throw new NotFoundException("Không tìm thấy sản phẩm ..");
         Product product = result.get();
         product.setName(productRequestDTO.getName());
@@ -180,7 +181,7 @@ public class ProductServiceImpl implements ProductService {
     private List<Product> getProductByParentCategory(String id){
         List<Category> categoryList = categoryRepository.findAllByParentId(id);
         var subProducts = categoryList.stream().map(category -> getProductByParentCategory(category.getId())).toList();
-        var catProducts = productRepository.findByCategoryId(id);
+        var catProducts = productRepository.findByCategoryIdAndIsDeletedIsFalse(id);
         subProducts.stream().forEach(subProduct->catProducts.addAll(subProduct));
         return catProducts;
     }
@@ -219,7 +220,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponseDTO> getAll() {
-        var products = productRepository.findAll();
+        var products = productRepository.findAllByIsDeletedIsFalse();
         return products.stream().map(
                 product -> {
                     List<File> files = fileRepository.findAllByProductId(product.getId());
@@ -237,5 +238,16 @@ public class ProductServiceImpl implements ProductService {
                             .build();
                 }
         ).toList();
+    }
+
+    @Override
+    public void softDeleteProduct(String id) {
+        productRepository.findById(id).ifPresent(product -> {
+            product.setIsDeleted(Boolean.TRUE);
+            modelRepository.findAllByProductId(product.getId()).stream()
+                    .peek(model -> model.setIsDeleted(Boolean.TRUE))
+                    .map(modelRepository::save).toList();
+            productRepository.save(product);
+        });
     }
 }

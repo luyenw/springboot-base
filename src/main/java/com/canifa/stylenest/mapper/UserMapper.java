@@ -1,5 +1,6 @@
 package com.canifa.stylenest.mapper;
 
+import com.canifa.stylenest.entity.Role;
 import com.canifa.stylenest.entity.User;
 import com.canifa.stylenest.entity.dto.UserDto;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ public class UserMapper {
         return UserDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())
-                .roles(user.getRoles().stream().map(role->role.toString()).toList())
+                .roles(user.getRoles().stream().map(Role::toString).toList())
                 .build();
     }
 
