@@ -26,6 +26,7 @@ import java.util.Map;
 public class ProductController {
     private final ProductService productService;
     private final ObjectMapper objectMapper;
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getProduct(@PathVariable("id") String id) {
         return ResponseEntity.ok().body(
@@ -55,30 +56,31 @@ public class ProductController {
         ProductRequestDTO productRequestDTO = null;
         try {
             productRequestDTO = objectMapper.readValue(productRequestJsonString, ProductRequestDTO.class);
+            var multipartFileMap = extractRequestFileMap(productRequestDTO, (MultipartHttpServletRequest) request);
+            return ResponseEntity.ok().body(
+                    ApiResponse.builder()
+                            .success(true)
+                            .message("Tạo mới sản phẩm thành công")
+                            .data(productService.createProduct(productRequestDTO, multipartFileMap))
+                            .build()
+            );
         } catch (JsonProcessingException e) {
             throw new BadRequestException("Truyền sản phẩm không đúng định dạng");
         }
-        var multipartFileMap = extractRequestFileMap(productRequestDTO, (MultipartHttpServletRequest) request);
-        return ResponseEntity.ok().body(
-                ApiResponse.builder()
-                        .success(true)
-                        .message("Tạo mới sản phẩm thành công")
-                        .data(productService.createProduct(productRequestDTO, multipartFileMap))
-                        .build()
-        );
+
     }
 
     @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable("id") String id){
+    public ResponseEntity<?> deleteProduct(@PathVariable("id") String id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok().body(
                 ApiResponse.builder()
-                    .success(true)
-                    .message("Xóa sản phẩm thành công")
-                    .data(id)
-                    .build()
+                        .success(true)
+                        .message("Xóa sản phẩm thành công")
+                        .data(id)
+                        .build()
         );
     }
 
@@ -88,7 +90,7 @@ public class ProductController {
     public ResponseEntity<?> patchProduct(
             @PathVariable("id") String id,
             @RequestPart("data") ProductRequestDTO productRequestDTO,
-            HttpServletRequest request){
+            HttpServletRequest request) {
         var multipartFileMap = extractRequestFileMap(productRequestDTO, (MultipartHttpServletRequest) request);
         return ResponseEntity.ok().body(
                 ApiResponse.builder()
