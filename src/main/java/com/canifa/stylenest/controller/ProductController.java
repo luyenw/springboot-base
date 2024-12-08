@@ -4,6 +4,7 @@ import com.canifa.stylenest.common.PageRequest;
 import com.canifa.stylenest.entity.dto.request.ProductRequestDTO;
 import com.canifa.stylenest.entity.dto.response.ApiResponse;
 import com.canifa.stylenest.service.ProductService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.Map;
 @Slf4j
 public class ProductController {
     private final ProductService productService;
+    private final ObjectMapper objectMapper;
     @GetMapping("/{id}")
     public ResponseEntity<?> getProduct(@PathVariable("id") String id) {
         return ResponseEntity.ok().body(
@@ -47,7 +49,8 @@ public class ProductController {
     @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("")
-    public ResponseEntity<?> createProduct(@RequestPart("data") ProductRequestDTO productRequestDTO, HttpServletRequest request) {
+    public ResponseEntity<?> createProduct(@RequestPart("data") String productRequestJsonString, HttpServletRequest request) {
+        ProductRequestDTO productRequestDTO = objectMapper.convertValue(productRequestJsonString, ProductRequestDTO.class);
         var multipartFileMap = extractRequestFileMap(productRequestDTO, (MultipartHttpServletRequest) request);
         return ResponseEntity.ok().body(
                 ApiResponse.builder()
@@ -89,7 +92,7 @@ public class ProductController {
         );
     }
 
-    private Map extractRequestFileMap(@RequestPart("data") ProductRequestDTO productRequestDTO, MultipartHttpServletRequest request) {
+    private Map extractRequestFileMap(ProductRequestDTO productRequestDTO, MultipartHttpServletRequest request) {
         MultipartHttpServletRequest multipartRequest = request;
         var multipartFileMap = new HashMap<>();
         multipartFileMap.put("images", multipartRequest.getFiles("images"));
