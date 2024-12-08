@@ -26,7 +26,6 @@ import java.util.Map;
 public class ProductController {
     private final ProductService productService;
     private final ObjectMapper objectMapper;
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getProduct(@PathVariable("id") String id) {
         return ResponseEntity.ok().body(
@@ -73,14 +72,14 @@ public class ProductController {
     @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable("id") String id) {
-        productService.deleteProduct(id);
+    public ResponseEntity<?> deleteProduct(@PathVariable("id") String id){
+        productService.softDeleteProduct(id);
         return ResponseEntity.ok().body(
                 ApiResponse.builder()
-                        .success(true)
-                        .message("Xóa sản phẩm thành công")
-                        .data(id)
-                        .build()
+                    .success(true)
+                    .message("Xóa sản phẩm thành công")
+                    .data(id)
+                    .build()
         );
     }
 

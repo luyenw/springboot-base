@@ -20,7 +20,7 @@ public class ModelServiceImpl implements ModelService {
     @Override
     public List<ModelResponseDTO> findAllByProductId(String productId) {
         List<ModelResponseDTO> modelResponseDTOS = new ArrayList<>();
-        List<Model> models = modelRepository.findAllByProductId(productId);
+        List<Model> models = modelRepository.findAllByProductIdAndIsDeletedIsFalse(productId);
         for (Model model : models) {
             List<File> files = fileRepository.findAllByModelId(model.getId());
 

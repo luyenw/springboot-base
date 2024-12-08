@@ -1,10 +1,8 @@
 package com.canifa.stylenest.service.impl;
 
-import com.canifa.stylenest.entity.CustomUserDetails;
-import com.canifa.stylenest.entity.Order;
-import com.canifa.stylenest.entity.OrderItem;
-import com.canifa.stylenest.entity.OrderStatus;
+import com.canifa.stylenest.entity.*;
 import com.canifa.stylenest.entity.dto.request.CheckoutRequest;
+import com.canifa.stylenest.exception.NotFoundException;
 import com.canifa.stylenest.repository.ItemRepository;
 import com.canifa.stylenest.repository.ModelRepository;
 import com.canifa.stylenest.repository.OrderRepository;
@@ -39,9 +37,10 @@ public class OrderServiceImpl implements OrderService {
                 entry->{
                     String itemId = entry.getKey();
                     Long quantity = entry.getValue();
+                    Model model = modelRepository.findByIdAndIsDeletedIsFalse(itemId).orElseThrow(()->new NotFoundException(String.format("Model not found: %s", itemId)));
                     return OrderItem.builder()
                             .modelId(itemId)
-                            .model(modelRepository.findById(itemId).get())
+                            .model(model)
                             .quantity(quantity)
                             .userId(userId)
                             .build();

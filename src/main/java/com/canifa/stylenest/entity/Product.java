@@ -1,6 +1,5 @@
 package com.canifa.stylenest.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +23,8 @@ public class Product {
     private String instruction;
     private String materials;
     private String categoryId;
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductFile> productFiles = new ArrayList<>();

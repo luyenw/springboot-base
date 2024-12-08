@@ -19,4 +19,5 @@ public interface ProductService {
     PaginationUtils.PageResponse getProductByCategory(String id, PageRequest pageRequest);
     PaginationUtils.PageResponse getAll(PageRequest pageRequest);
     List<ProductResponseDTO> getAll();
+    void softDeleteProduct(String id);
 }

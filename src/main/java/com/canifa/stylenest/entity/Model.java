@@ -20,4 +20,6 @@ public class Model {
     @ManyToOne
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
     private Product product;
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 }
