@@ -3,6 +3,7 @@ package com.canifa.stylenest.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "models")
@@ -21,5 +22,5 @@ public class Model {
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
     private Product product;
     @Column(name = "is_deleted")
-    private Boolean isDeleted;
+    private Boolean isDeleted = Boolean.FALSE;
 }

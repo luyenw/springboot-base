@@ -64,7 +64,9 @@ public class ProductServiceImpl implements ProductService {
             .price(productRequestDTO.getPrice())
             .description(productRequestDTO.getDescription())
             .instruction(productRequestDTO.getInstruction())
-            .materials(productRequestDTO.getMaterials()).build();
+            .materials(productRequestDTO.getMaterials())
+            .isDeleted(Boolean.FALSE)
+            .build();
         product = productRepository.save(product);
 
         // save model images
